@@ -1,0 +1,192 @@
+table Subscriptions
+	lineageTag: bc37e930-a4e3-4f55-9503-673490806da3
+
+	measure TotalMRR = SUM(Revenue[MRRAmount])
+		formatString: $#,##0.00
+		lineageTag: 02295db6-52fe-4af0-8714-84be61c0a32a
+
+	measure ActiveSubscriptions = ```
+			
+			VAR asOfDate = MAX ( DimDate[Date] )
+			RETURN
+			CALCULATE (
+			    DISTINCTCOUNT ( Subscriptions[SubscriptionID] ),
+			    FILTER (
+			        Subscriptions,
+			        Subscriptions[SubscriptionStartDate] <= asOfDate
+			            && (
+			                ISBLANK ( Subscriptions[SubscriptionEndDate] )
+			                || Subscriptions[SubscriptionEndDate] > asOfDate
+			            )
+			            && Subscriptions[SubscriptionStatus] = "Active"
+			    )
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 4c0e7ea0-652d-46bd-861d-57b7f5c09ca9
+
+	measure ChurnedSubscriptions = ```
+			
+			VAR endDate = MAX ( DimDate[Date] )
+			VAR startDate = endDate - 30
+			RETURN
+			CALCULATE (
+			    DISTINCTCOUNT ( Subscriptions[SubscriptionID] ),
+			    FILTER (
+			        Subscriptions,
+			        NOT ISBLANK ( Subscriptions[SubscriptionEndDate] )
+			            && Subscriptions[SubscriptionEndDate] > startDate
+			            && Subscriptions[SubscriptionEndDate] <= endDate
+			            && Subscriptions[SubscriptionStatus] = "Churned"
+			    )
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 6bc1c545-3aa8-41fb-9cde-ddf746596438
+
+	measure ChurnRatePct = ```
+			
+			DIVIDE ( [ChurnedSubscriptions], [ActiveSubscriptions] )
+			
+			```
+		lineageTag: 031608a8-cc9f-40ff-8938-f5a00a9e7bd6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure AverageContractValue = ```
+			
+			VAR asOfDate = MAX ( DimDate[Date] )
+			RETURN
+			CALCULATE (
+			    AVERAGE ( Subscriptions[MonthlyPrice] ),
+			    FILTER (
+			        Subscriptions,
+			        Subscriptions[SubscriptionStartDate] <= asOfDate
+			            && (
+			                ISBLANK ( Subscriptions[SubscriptionEndDate] )
+			                || Subscriptions[SubscriptionEndDate] > asOfDate
+			            )
+			            && Subscriptions[SubscriptionStatus] = "Active"
+			    )
+			)
+			
+			```
+		lineageTag: a0746e11-fcc8-4d35-8806-c51648270037
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure AvgDailyActiveUsers = ```
+			
+			AVERAGEX (
+			    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -30, DAY ),
+			    CALCULATE ( SUM ( Usage[DailyActiveUsers] ) )
+			)
+			
+			```
+		lineageTag: cd01e324-12dc-4c02-bc30-b8e36aa58281
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure TotalAPICallsLast30 = ```
+			
+			CALCULATE (
+			    SUM ( Usage[TotalAPICallsDaily] ),
+			    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -30, DAY )
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 5b2f47ec-1b9f-4fcd-8baf-a1b4d8733191
+
+	column SubscriptionID
+		dataType: int64
+		formatString: 0
+		lineageTag: 3100da62-9f92-4e9a-ac20-690b89234ca5
+		summarizeBy: none
+		sourceColumn: SubscriptionID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerID
+		dataType: int64
+		formatString: 0
+		lineageTag: 7c1883a0-412f-4810-a902-6b62d87e64de
+		summarizeBy: count
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column SubscriptionStartDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: fe0cc8f5-a889-46b6-96e4-371db2c2af61
+		summarizeBy: none
+		sourceColumn: SubscriptionStartDate
+
+		variation Variation
+			isDefault
+			relationship: e2f769a4-b02b-483d-bcd2-e69f6e42db1e
+			defaultHierarchy: LocalDateTable_3b2147f3-cf27-4995-9e22-e3c9ffea6953.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column SubscriptionEndDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 23d89fbe-e67b-4167-bf73-7dcb6e68c48d
+		summarizeBy: none
+		sourceColumn: SubscriptionEndDate
+
+		variation Variation
+			isDefault
+			relationship: 7881cea5-a7ea-4fcd-b03f-696687022c0e
+			defaultHierarchy: LocalDateTable_54b3a22f-e0a5-4dc3-b4dc-93fd9ad605f0.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column MonthlyPrice
+		dataType: int64
+		formatString: $#,##0.00
+		lineageTag: 56c08968-97dc-48a9-9183-83137c6c12f9
+		summarizeBy: none
+		sourceColumn: MonthlyPrice
+
+		annotation SummarizationSetBy = Automatic
+
+	column SubscriptionStatus
+		dataType: string
+		lineageTag: 4c090049-ccdd-4e30-86fd-2a961fe272a2
+		summarizeBy: none
+		sourceColumn: SubscriptionStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlanType
+		dataType: string
+		lineageTag: 5d66e09e-85a5-48ef-8380-28df7a2bfe66
+		summarizeBy: none
+		sourceColumn: PlanType
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Subscriptions = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\temp\power_bi_demo1.xls"), null, true),
+				    Subscriptions1 = Source{[Name="Subscriptions"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Subscriptions1, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"SubscriptionID", Int64.Type}, {"CustomerID", Int64.Type}, {"SubscriptionStartDate", type date}, {"SubscriptionEndDate", type date}, {"MonthlyPrice", Int64.Type}, {"SubscriptionStatus", type text}, {"PlanType", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

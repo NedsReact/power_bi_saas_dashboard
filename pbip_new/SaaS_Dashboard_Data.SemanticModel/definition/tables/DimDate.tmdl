@@ -1,0 +1,67 @@
+table DimDate
+	lineageTag: bbe56690-bfa2-46b7-8ec9-37df3dbaab1a
+
+	column Date
+		formatString: Long Date
+		lineageTag: 6083f197-74b3-4559-95cc-27027af11127
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: ce669422-624e-4a58-971c-422e2cff5d96
+			defaultHierarchy: LocalDateTable_b77119a1-fd13-4796-899c-0438f737b1d8.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year = YEAR([Date])
+		dataType: int64
+		formatString: 0
+		lineageTag: dimdate-year-001
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthNo = MONTH([Date])
+		dataType: int64
+		formatString: 0
+		lineageTag: dimdate-monthno-001
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month = FORMAT([Date], "MMMM")
+		dataType: string
+		lineageTag: dimdate-month-001
+		summarizeBy: none
+		sortByColumn: MonthNo
+
+	column YearMonth = FORMAT([Date], "YYYY-MM")
+		dataType: string
+		lineageTag: dimdate-yearmonth-001
+		summarizeBy: none
+
+	partition DimDate = calculated
+		mode: import
+		source =
+				
+				VAR Dates =
+				    FILTER (
+				        UNION (
+				            SELECTCOLUMNS ( Revenue, "d", Revenue[RevenueDate] ),
+				            SELECTCOLUMNS ( Usage, "d", Usage[UsageDate] ),
+				            SELECTCOLUMNS ( Subscriptions, "d", Subscriptions[SubscriptionStartDate] ),
+				            SELECTCOLUMNS ( Subscriptions, "d", Subscriptions[SubscriptionEndDate] )
+				        ),
+				        NOT ISBLANK ( [d] )
+				    )
+				VAR MinDate = MINX ( Dates, [d] )
+				VAR MaxDate = MAXX ( Dates, [d] )
+				RETURN
+				    CALENDAR ( MinDate, MaxDate )
+
+	annotation PBI_Id = 75cd74f1f6df488587fb9c84014b9d59
+

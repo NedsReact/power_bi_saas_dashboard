@@ -1,0 +1,25 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["Revenue","Subscriptions","Usage"]
+
+annotation PBI_ProTooling = ["DevMode","DaxQueryView_Desktop"]
+
+ref table Revenue
+ref table Subscriptions
+ref table DateTableTemplate_9f567d1d-58bf-47c6-a066-13c1726457c9
+ref table LocalDateTable_3b2147f3-cf27-4995-9e22-e3c9ffea6953
+ref table LocalDateTable_54b3a22f-e0a5-4dc3-b4dc-93fd9ad605f0
+ref table Usage
+ref table DimDate
+ref table LocalDateTable_b77119a1-fd13-4796-899c-0438f737b1d8
+
+ref cultureInfo en-US
+

@@ -1,0 +1,97 @@
+table Revenue
+	lineageTag: 5a4727e3-e2ee-4310-b9e2-2a4ed72e82b1
+
+	measure RevenueRows = COUNTROWS(Revenue)
+		formatString: 0
+		lineageTag: 902c9752-99f5-4b4c-a149-380f1b44cf8c
+
+	measure 'MRR Latest Month' =
+			
+			VAR LastMonth = MAX ( Revenue[RevenueDate] )
+			RETURN
+			    CALCULATE ( SUM ( Revenue[MRRAmount] ), Revenue[RevenueDate] = LastMonth )
+		formatString: 0
+		lineageTag: fe80d7e0-45d5-4bbb-ba18-b8527e075969
+
+	column RevenueID
+		dataType: int64
+		formatString: 0
+		lineageTag: d95c51f9-3b00-48f2-b08f-eddeb9ff99ec
+		summarizeBy: count
+		sourceColumn: RevenueID
+
+		annotation SummarizationSetBy = Automatic
+
+	column SubscriptionID
+		dataType: int64
+		formatString: 0
+		lineageTag: 1ab828f7-199d-4fde-8760-ad79e526370a
+		summarizeBy: none
+		sourceColumn: SubscriptionID
+
+		annotation SummarizationSetBy = Automatic
+
+	column RevenueYear
+		dataType: int64
+		formatString: 0
+		lineageTag: b01a8e27-56e5-4bde-a368-fafbde056939
+		summarizeBy: sum
+		sourceColumn: RevenueYear
+
+		annotation SummarizationSetBy = Automatic
+
+	column RevenueMonth
+		dataType: int64
+		formatString: 0
+		lineageTag: d9cc3733-df10-47fc-b68e-6d0496d038da
+		summarizeBy: sum
+		sourceColumn: RevenueMonth
+
+		annotation SummarizationSetBy = Automatic
+
+	column MRRAmount
+		dataType: int64
+		formatString: $#,##0.00
+		lineageTag: 74c3f427-7da3-4247-9d59-02a4de423afa
+		summarizeBy: sum
+		sourceColumn: MRRAmount
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsChurned
+		dataType: int64
+		formatString: 0
+		lineageTag: 2d88cd90-f301-4291-ba4e-23e4884e4e8b
+		summarizeBy: sum
+		sourceColumn: IsChurned
+
+		annotation SummarizationSetBy = Automatic
+
+	column RevenueDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 24a5d4f3-562f-425f-938d-f7213fa3ad99
+		summarizeBy: none
+		sourceColumn: RevenueDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition Revenue = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\temp\power_bi_demo1.xls"), null, true),
+				    Revenue1 = Source{[Name="Revenue"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Revenue1, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"RevenueID", Int64.Type}, {"SubscriptionID", Int64.Type}, {"RevenueYear", Int64.Type}, {"RevenueMonth", Int64.Type}, {"MRRAmount", Int64.Type}, {"IsChurned", Int64.Type}}),
+				    #"Added Custom" = Table.AddColumn(#"Changed Type", "RevenueDate", each #date([RevenueYear], [RevenueMonth], 1)),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Added Custom",{{"RevenueDate", type date}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

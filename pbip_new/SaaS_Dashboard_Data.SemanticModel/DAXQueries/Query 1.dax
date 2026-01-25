@@ -1,0 +1,65 @@
+// Welcome to DAX query view! Learn more about DAX queries at https://aka.ms/dax-queries.
+// Right-click on tables, columns, or measures in the data pane to access quick queries, or ask Copilot for help writing DAX.
+
+// Select "Run" to try this sample DAX query.
+EVALUATE
+    TOPN(100, 'Revenue')
+
+EVALUATE
+ROW(
+    "Revenue Min", MIN(Revenue[RevenueDate]),
+    "Revenue Max", MAX(Revenue[RevenueDate]),
+    "Revenue Rows", COUNTROWS(Revenue)
+)
+
+EVALUATE
+ROW(
+    "Usage Min", MIN(Usage[UsageDate]),
+    "Usage Max", MAX(Usage[UsageDate]),
+    "Usage Rows", COUNTROWS(Usage)
+)
+
+EVALUATE
+ROW(
+    "Revenue Rows", COUNTROWS(Revenue),
+    "Revenue Min", MIN(Revenue[RevenueDate]),
+    "Revenue Max", MAX(Revenue[RevenueDate]),
+    "Subs Rows", COUNTROWS(Subscriptions),
+    "Subs Start Min", MIN(Subscriptions[SubscriptionStartDate]),
+    "Subs Start Max", MAX(Subscriptions[SubscriptionStartDate]),
+    "Usage Rows", COUNTROWS(Usage),
+    "Usage Min", MIN(Usage[UsageDate]),
+    "Usage Max", MAX(Usage[UsageDate])
+)
+
+EVALUATE
+VAR RevenueMin = MIN(Revenue[RevenueDate])
+VAR RevenueMax = MAX(Revenue[RevenueDate])
+
+VAR SubMin = MIN(Subscriptions[SubscriptionStartDate])
+VAR SubMax = MAX(Subscriptions[SubscriptionStartDate])
+
+VAR UsageMin = MIN(Usage[UsageDate])
+VAR UsageMax = MAX(Usage[UsageDate])
+
+VAR CommonStart = MAX(RevenueMin, MAX(SubMin, UsageMin))
+VAR CommonEnd   = MIN(RevenueMax, MIN(SubMax, UsageMax))
+
+VAR HasOverlap = CommonStart <= CommonEnd
+
+VAR Gap_Rev_to_Usage_Days =
+    IF(RevenueMax < UsageMin, DATEDIFF(RevenueMax, UsageMin, DAY), BLANK())
+
+RETURN
+ROW(
+    "RevenueMin", RevenueMin,
+    "RevenueMax", RevenueMax,
+    "SubStartMin", SubMin,
+    "SubStartMax", SubMax,
+    "UsageMin", UsageMin,
+    "UsageMax", UsageMax,
+    "HasOverlap_All3", HasOverlap,
+    "CommonStart", IF(HasOverlap, CommonStart, BLANK()),
+    "CommonEnd", IF(HasOverlap, CommonEnd, BLANK()),
+    "GapDays_RevenueMax_to_UsageMin", Gap_Rev_to_Usage_Days
+)

@@ -1,0 +1,74 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 817.38305001469371,
+            "y": 24
+          },
+          "nodeIndex": "Revenue",
+          "nodeLineageTag": "5a4727e3-e2ee-4310-b9e2-2a4ed72e82b1",
+          "size": {
+            "height": 253,
+            "width": 234
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 322.20156119318523,
+            "y": 10
+          },
+          "nodeIndex": "Subscriptions",
+          "nodeLineageTag": "bc37e930-a4e3-4f55-9503-673490806da3",
+          "size": {
+            "height": 461,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "nodeIndex": "Usage",
+          "nodeLineageTag": "4437a90c-61c2-4a7c-956c-a943f2df9850",
+          "size": {
+            "height": 294,
+            "width": 234
+          },
+          "zIndex": 4
+        },
+        {
+          "location": {
+            "x": 559.183045437057,
+            "y": 492
+          },
+          "nodeIndex": "DimDate",
+          "nodeLineageTag": "bbe56690-bfa2-46b7-8ec9-37df3dbaab1a",
+          "size": {
+            "height": 232,
+            "width": 234
+          },
+          "zIndex": 2
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

@@ -1,0 +1,31 @@
+relationship e2f769a4-b02b-483d-bcd2-e69f6e42db1e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Subscriptions.SubscriptionStartDate
+	toColumn: LocalDateTable_3b2147f3-cf27-4995-9e22-e3c9ffea6953.Date
+
+relationship 7881cea5-a7ea-4fcd-b03f-696687022c0e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Subscriptions.SubscriptionEndDate
+	toColumn: LocalDateTable_54b3a22f-e0a5-4dc3-b4dc-93fd9ad605f0.Date
+
+relationship AutoDetected_b71560c6-e49b-43c7-91d3-170249918d2f
+	fromColumn: Revenue.SubscriptionID
+	toColumn: Subscriptions.SubscriptionID
+
+relationship AutoDetected_4e4f2fe1-b4a4-4bd4-a8a5-48433b71d91e
+	fromColumn: Usage.SubscriptionID
+	toColumn: Subscriptions.SubscriptionID
+
+relationship ce669422-624e-4a58-971c-422e2cff5d96
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DimDate.Date
+	toColumn: LocalDateTable_b77119a1-fd13-4796-899c-0438f737b1d8.Date
+
+relationship 5d010c33-3d3e-58a3-a4ae-ae89ec44529c
+	fromColumn: Usage.UsageDate
+	toColumn: DimDate.Date
+
+relationship e9fc196b-d924-3e4d-bd5c-06c98c12a05c
+	fromColumn: Revenue.RevenueDate
+	toColumn: DimDate.Date
+

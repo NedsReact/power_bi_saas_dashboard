@@ -1,0 +1,105 @@
+table Usage
+	lineageTag: 4437a90c-61c2-4a7c-956c-a943f2df9850
+
+	column UsageID
+		dataType: int64
+		formatString: 0
+		lineageTag: d7594f0e-75d8-4fcf-bacc-54bd01335dce
+		summarizeBy: count
+		sourceColumn: UsageID
+
+		annotation SummarizationSetBy = Automatic
+
+	column SubscriptionID
+		dataType: int64
+		formatString: 0
+		lineageTag: a563d0b6-3f49-4399-8f48-3dd41bcbbc59
+		summarizeBy: none
+		sourceColumn: SubscriptionID
+
+		annotation SummarizationSetBy = Automatic
+
+	column UsageDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: db432fff-04b4-4a26-a72f-11b7db686416
+		summarizeBy: none
+		sourceColumn: UsageDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column DailyActiveUsers
+		dataType: int64
+		formatString: 0
+		lineageTag: 97f26d52-5db3-4b3d-ac1b-cee0faaf0314
+		summarizeBy: sum
+		sourceColumn: DailyActiveUsers
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalAPICallsDaily
+		dataType: string
+		lineageTag: f73d129a-aca8-4b4d-87b6-04e1cb3b2fe8
+		summarizeBy: none
+		sourceColumn: TotalAPICallsDaily
+
+		annotation SummarizationSetBy = Automatic
+
+	column Feature1_Usage
+		dataType: string
+		lineageTag: d366a01d-1ba3-4238-afdc-1c2871103e7a
+		summarizeBy: none
+		sourceColumn: Feature1_Usage
+
+		annotation SummarizationSetBy = Automatic
+
+	column Feature2_Usage
+		dataType: string
+		lineageTag: 55e085fa-b9ee-4be7-bbd1-2e478defc4d6
+		summarizeBy: none
+		sourceColumn: Feature2_Usage
+
+		annotation SummarizationSetBy = Automatic
+
+	column Feature3_Usage
+		dataType: string
+		lineageTag: 8f4924dd-7125-4e32-a5e7-1c1d02bdf50d
+		summarizeBy: none
+		sourceColumn: Feature3_Usage
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Usage = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Repository_ReactOnly_TheDailyHeatlhyGithub\Power_BI_SaaS_Dashboard\pbip_new\power_bi_demo1.xls"), null, true),
+				    Usage1 = Source{[Name="Usage"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Usage1, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(
+				        #"Promoted Headers",
+				        {
+				            {"UsageID", Int64.Type},
+				            {"SubscriptionID", Int64.Type},
+				            {"UsageDate", type date}
+				        }
+				    ),
+				
+				    // Shift UsageDate so the MAX(UsageDate) becomes 2024-01-01
+				    MaxUsageDate = List.Max(#"Changed Type"[UsageDate]),
+				    TargetMax = #date(2024, 1, 1),
+				    OffsetDays = Duration.Days(TargetMax - MaxUsageDate),
+				    #"Shifted UsageDate" = Table.TransformColumns(
+				        #"Changed Type",
+				        {{"UsageDate", each Date.AddDays(_, OffsetDays), type date}}
+				    ),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Shifted UsageDate",{{"DailyActiveUsers", Int64.Type}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+
