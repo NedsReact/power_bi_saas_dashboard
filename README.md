@@ -2,10 +2,6 @@
 
 A production-style SaaS dashboard that embeds Power BI reports into a web app with authentication, tenant-aware access, and a backend that manages workspaces/datasets, refresh, and audit events.
 
-**Live demo:** <ADD_DEMO_LINK>  
-**Case study:** <ADD_PORTFOLIO_LINK>  
-**Contact:** <ADD_LINKEDIN_OR_EMAIL>
-
 ---
 
 ## What this is
@@ -30,7 +26,7 @@ This project demonstrates how to ship **Power BI as a SaaS feature**:
 
 ---
 
-## Tech stack (edit to match your repo)
+## Tech stack 
 - **Power BI:** semantic model (PBIX), Power Query (M), DAX measures, RLS roles
   
 ---
