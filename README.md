@@ -68,5 +68,9 @@ Example:
 
 ---
 
-## Repo structure (example)
+##Power BI setup (quick)
+
+- Open PBIP from /pbip/pbip
+
+---
 
