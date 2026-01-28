@@ -31,13 +31,8 @@ This project demonstrates how to ship **Power BI as a SaaS feature**:
 ---
 
 ## Tech stack (edit to match your repo)
-- **Power BI:** semantic model (PBIX), Power Query (M), DAX measures, RLS roles  
-- **Frontend:** React + TypeScript (Vite/Next.js)  
-- **Backend:** .NET (ASP.NET Core Web API) or FastAPI (choose yours)  
-- **Database:** PostgreSQL / SQL Server (tenants, users, embeds, logs)  
-- **Auth:** Entra ID (Azure AD) / Auth0 / Clerk (choose yours)  
-- **Infra:** Docker Compose for local; Azure (App Service/Container Apps) for prod
-
+- **Power BI:** semantic model (PBIX), Power Query (M), DAX measures, RLS roles
+  
 ---
 
 ## Screenshots
@@ -68,7 +63,7 @@ Example:
 
 ---
 
-##Power BI setup (quick)
+## Power BI setup (quick)
 
 - Open PBIP from /pbip/pbip
 
