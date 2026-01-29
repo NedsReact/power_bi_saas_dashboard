@@ -40,7 +40,8 @@ This project demonstrates how to ship **Power BI as a SaaS feature**:
 - Refresh status screen
 
 Example:
-![Dashboard](docs/screenshots/dashboard.png)
+<img width="3840" height="2063" alt="image" src="https://github.com/user-attachments/assets/b3189c8a-6caf-4e32-a136-0a094d01638d" />
+
 
 ---
 
