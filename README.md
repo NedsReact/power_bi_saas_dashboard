@@ -4,28 +4,6 @@ A production-style SaaS dashboard that embeds Power BI reports into a web app wi
 
 ---
 
-## What this is
-This project demonstrates how to ship **Power BI as a SaaS feature**:
-- Users log in
-- They see dashboards filtered to their tenant (company / client / workspace)
-- The app generates **embed tokens** securely server-side
-- Data model supports scalable reporting (star schema + optimized DAX)
-
-> If you’re evaluating me for BI delivery sprints: this repo shows end-to-end delivery (modeling → DAX → embedding → refresh → security).
-
----
-
-## Key features
-- **Embedded Power BI** report(s) in a web UI (slicers, drill-through, tooltips)
-- **Tenant-aware access** (each tenant mapped to workspace/report/dataset)
-- **Row-Level Security (RLS)** support (optional; recommended for shared datasets)
-- **Embed token generation** via backend (no secrets in frontend)
-- **Dataset refresh orchestration** (manual + scheduled) + refresh status
-- **Health & audit logs** (who viewed what / refresh events / errors)
-- Optional: export, bookmarks, deep links, alerting hooks
-
----
-
 ## Tech stack 
 - **Power BI:** semantic model (PBIX), Power Query (M), DAX measures, RLS roles
   
