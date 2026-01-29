@@ -24,17 +24,12 @@ Example:
 ---
 
 ## Architecture (high level)
-**Embedding flow (typical “App Owns Data” style):**
-1. Frontend requests an embed config for a report
-2. Backend validates user + tenant permissions
-3. Backend uses service principal to call Power BI REST API
-4. Backend returns: `embedUrl`, `reportId`, `accessToken` (embed token), settings
-5. Frontend embeds report via Power BI JS SDK
+Semantic model
+<img width="3840" height="2063" alt="image" src="https://github.com/user-attachments/assets/d3e53656-3079-446d-93c3-8172ba628e61" />
 
-**Security principles**
-- Power BI secrets stay **server-side only**
-- Tenant/report mapping is enforced in backend (not by UI)
-- Prefer **RLS** if tenants share datasets
+DAX queries
+<img width="3840" height="2063" alt="image" src="https://github.com/user-attachments/assets/7f0ab16b-f3bd-41cb-ab81-5010d284bc7e" />
+
 
 ---
 
